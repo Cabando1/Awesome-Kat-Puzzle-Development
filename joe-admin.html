@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#7057d9">
+<title>Joe Admin | Awesome Kat Puzzle</title>
+<style>
+:root{font-family:Inter,ui-rounded,"SF Pro Rounded",system-ui,-apple-system,sans-serif;--ink:#29233f;--muted:#756d8c;--accent:#7057d9;--accent2:#9a7bea;--line:rgba(61,45,106,.15);--panel:rgba(255,255,255,.9)}*{box-sizing:border-box}html,body{margin:0;min-height:100%;color:var(--ink);background:radial-gradient(circle at 10% 0,#fff0ce,transparent 32%),linear-gradient(145deg,#faf8ff,#e9e1ff);overscroll-behavior:none}button,input,select{font:inherit}.hidden{display:none!important}.wrap{width:min(1040px,calc(100% - 24px));margin:24px auto;padding-bottom:max(24px,env(safe-area-inset-bottom))}.card{background:var(--panel);border:1px solid rgba(255,255,255,.8);border-radius:25px;padding:clamp(18px,4vw,30px);box-shadow:0 20px 55px rgba(50,38,88,.15);backdrop-filter:blur(18px)}.login{max-width:480px;margin:10vh auto}.eyebrow{margin:0 0 7px;color:var(--accent);font-size:.7rem;font-weight:900;letter-spacing:.14em;text-transform:uppercase}h1,h2{margin-top:0}.muted{color:var(--muted)}.field{display:grid;gap:6px;margin:12px 0;font-weight:800;font-size:.84rem}.field input,.field select{width:100%;min-height:46px;border:1px solid var(--line);border-radius:13px;padding:9px 11px;background:white;color:var(--ink)}.primary,.secondary,.danger{min-height:45px;border-radius:13px;padding:9px 14px;font-weight:850;border:1px solid var(--line);cursor:pointer}.primary{color:white;border:0;background:linear-gradient(135deg,var(--accent),var(--accent2));box-shadow:0 10px 24px rgba(112,87,217,.24)}.secondary{background:white;color:var(--ink)}.danger{background:#fff0f1;color:#9d2637}.bar{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:18px}.note{background:#fff6da;border-radius:14px;padding:12px;color:#725b22}.grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:10px}.checks{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}.checks label{display:flex;align-items:center;gap:6px;background:white;border:1px solid var(--line);border-radius:999px;padding:8px 11px}.checks input{width:auto}.actions{display:flex;flex-wrap:wrap;gap:9px;margin-top:17px}.status{min-height:24px;color:#278c75;font-weight:850}.level-list{display:grid;gap:10px;margin-top:14px}.level-row{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;border:1px solid var(--line);border-radius:17px;padding:13px;background:rgba(249,247,255,.82)}.level-row strong,.level-row span{display:block}.level-row span{margin-top:3px;color:var(--muted);font-size:.8rem}@media(max-width:760px){.grid{grid-template-columns:1fr 1fr}.bar{flex-direction:column}}@media(max-width:480px){.wrap{width:calc(100% - 12px);margin:6px auto}.card{padding:15px;border-radius:18px}.grid{grid-template-columns:1fr}.level-row{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<section id="login" class="wrap login card">
+  <p class="eyebrow">Private workshop</p>
+  <h1>Joe Admin</h1>
+  <p id="loginHelp" class="muted">Create a PIN for this browser. The admin page is not linked from the player game.</p>
+  <label class="field">PIN<input id="pin" type="password" inputmode="numeric" minlength="4" maxlength="12" autocomplete="current-password"></label>
+  <label id="confirmWrap" class="field">Confirm PIN<input id="pin2" type="password" inputmode="numeric" minlength="4" maxlength="12"></label>
+  <button id="loginBtn" class="primary" type="button">Create PIN and enter</button>
+  <p id="loginStatus" class="status" aria-live="polite"></p>
+</section>
+<section id="admin" class="wrap card hidden">
+  <div class="bar">
+    <div><p class="eyebrow">On-device workshop</p><h1>Awesome Kat Puzzle Admin</h1></div>
+    <button id="lockBtn" class="secondary" type="button">Lock admin</button>
+  </div>
+  <p class="note">This PIN protects casual access on this browser. GitHub Pages is static, so true account security and cross-device publishing will require the future database-backed version.</p>
+  <h2>Create a custom room</h2>
+  <div class="grid">
+    <label class="field">Room name<input id="name" maxlength="40" value="Joe's Cat Room"></label>
+    <label class="field">Lines to clear<input id="goal" type="number" min="3" max="50" value="10"></label>
+    <label class="field">Speed<select id="speed"><option value="900">Gentle</option><option value="700" selected>Playful</option><option value="520">Quick</option><option value="380">Zoomies</option></select></label>
+    <label class="field">Theme<select id="theme"><option value="lavender">Lavender</option><option value="sunset">Sunset</option><option value="mint">Mint</option><option value="midnight">Midnight</option></select></label>
+    <label class="field">Starter layout<select id="starter"><option value="none">None</option><option value="steps">Steps</option><option value="cups">Cat cups</option><option value="zigzag">Zigzag</option></select></label>
+  </div>
+  <p class="eyebrow">Allowed shapes</p>
+  <div id="shapeChecks" class="checks"></div>
+  <div class="actions">
+    <button id="saveLevel" class="primary" type="button">Save custom room</button>
+    <button id="resetProgress" class="secondary" type="button">Reset player progress</button>
+    <button id="changePin" class="secondary" type="button">Change PIN</button>
+  </div>
+  <p id="status" class="status" aria-live="polite"></p>
+  <h2>Saved custom rooms</h2>
+  <div id="levelList" class="level-list"></div>
+  <div class="actions"><a class="secondary" style="text-decoration:none;display:inline-grid;place-items:center" href="index.html">Open player menu</a></div>
+</section>
+<script>
+(()=>{'use strict';
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const read=(k,d)=>{try{return JSON.parse(localStorage.getItem(k))??d}catch{return d}};
+const save=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch{}};
+const PIN_KEY='akpJoeAdminPin';
+function hash(value){let h=2166136261;for(let i=0;i<value.length;i++){h^=value.charCodeAt(i);h=Math.imul(h,16777619)}return(h>>>0).toString(16)}
+function loginMode(){const has=!!localStorage.getItem(PIN_KEY);$('#confirmWrap').classList.toggle('hidden',has);$('#loginBtn').textContent=has?'Unlock admin':'Create PIN and enter';$('#loginHelp').textContent=has?'Enter your PIN to unlock the private workshop.':'Create a PIN for this browser. The admin page is not linked from the player game.'}
+function enter(){const pin=$('#pin').value.trim(),stored=localStorage.getItem(PIN_KEY);if(!stored){if(pin.length<4){$('#loginStatus').textContent='Use at least four digits or characters.';return}if(pin!==$('#pin2').value.trim()){$('#loginStatus').textContent='PIN entries do not match.';return}localStorage.setItem(PIN_KEY,hash(pin))}else if(hash(pin)!==stored){$('#loginStatus').textContent='Incorrect PIN.';return}sessionStorage.setItem('akpJoeAdminOpen','1');showAdmin()}
+function showAdmin(){$('#login').classList.add('hidden');$('#admin').classList.remove('hidden');renderLevels()}
+function renderLevels(){const levels=read('akpCustom',[]),root=$('#levelList');if(!levels.length){root.innerHTML='<div class="level-row"><div><strong>No custom rooms yet</strong><span>Create one above. The four original rooms remain unchanged.</span></div></div>';return}root.innerHTML='';levels.forEach((level,index)=>{const row=document.createElement('div');row.className='level-row';row.innerHTML=`<div><strong>${escapeHtml(level.name)}</strong><span>${Number(level.goal)} lines · ${speedLabel(Number(level.speed))} · ${escapeHtml(level.theme)}</span></div><button class="danger" type="button">Delete</button>`;row.querySelector('button').addEventListener('click',()=>{if(!confirm(`Delete ${level.name}?`))return;levels.splice(index,1);save('akpCustom',levels);const unlocked=Math.min(read('akpUnlocked',1),4+levels.length);save('akpUnlocked',Math.max(1,unlocked));renderLevels();$('#status').textContent='Custom room deleted.'});root.appendChild(row)})}
+function speedLabel(speed){return speed>=850?'Gentle':speed>=650?'Playful':speed>=480?'Quick':'Zoomies'}
+function escapeHtml(value){return String(value).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+$('#shapeChecks').innerHTML=['I','O','T','L','J','S','Z'].map(shape=>`<label><input type="checkbox" value="${shape}" checked>${shape}</label>`).join('');
+$('#loginBtn').addEventListener('click',enter);$('#pin').addEventListener('keydown',event=>{if(event.key==='Enter')enter()});
+$('#lockBtn').addEventListener('click',()=>{sessionStorage.removeItem('akpJoeAdminOpen');location.reload()});
+$('#saveLevel').addEventListener('click',()=>{const shapes=$$('#shapeChecks input:checked').map(input=>input.value),name=$('#name').value.trim();if(!name){$('#status').textContent='Enter a room name.';return}if(!shapes.length){$('#status').textContent='Choose at least one shape.';return}const level={id:'custom-'+Date.now(),name,description:'A custom room created in Joe Admin.',goal:Number($('#goal').value),speed:Number($('#speed').value),theme:$('#theme').value,starter:$('#starter').value,shapes};const levels=read('akpCustom',[]);levels.push(level);save('akpCustom',levels);save('akpUnlocked',Math.max(read('akpUnlocked',1),4+levels.length));$('#status').textContent='Custom room saved on this browser.';renderLevels()});
+$('#resetProgress').addEventListener('click',()=>{if(!confirm('Reset scores and room unlock progress on this browser?'))return;localStorage.removeItem('akpBest');localStorage.setItem('akpUnlocked','1');$('#status').textContent='Player progress reset.'});
+$('#changePin').addEventListener('click',()=>{if(!confirm('Remove the current PIN and create a new one?'))return;localStorage.removeItem(PIN_KEY);sessionStorage.removeItem('akpJoeAdminOpen');location.reload()});
+loginMode();if(sessionStorage.getItem('akpJoeAdminOpen')==='1')showAdmin();
+})();
+</script>
+</body>
+</html>
