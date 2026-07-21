@@ -1,58 +1,49 @@
-# Awesome Kat Puzzle
+# Awesome Kat Puzzle — Development Copy
 
-A browser-based falling-block puzzle made for Gail, with original cartoon cats that walk across the delivery runway and drop through the hatch as tetromino-style pieces.
+> **Development repository only.** Changes here do not update the live production game unless they are deliberately transferred to `Cabando1/Awesome-Kat-Puzzle-1`.
 
-## Play
+This repository is the protected working copy for testing new gameplay, layouts, sounds, skins, and future volumes.
 
-Main version dashboard:
+## Repository roles
+
+| Repository | Purpose |
+|---|---|
+| `Cabando1/Awesome-Kat-Puzzle-1` | Live production game. Do not experiment directly in this repository. |
+| `Cabando1/Awesome-Kat-Puzzle-Development` | Development and testing copy. Make and validate changes here first. |
+
+## Current development workflow
+
+1. Create or use a focused branch for the change.
+2. Test computer, iPad, iPhone, and Android layouts.
+3. Test sound after the first player interaction because mobile browsers block automatic audio.
+4. Merge the approved work into this development repository’s `main` branch.
+5. Only after final approval, transfer the tested files to a new branch in the production repository.
+
+## Current editions
+
+### Version 1: Classic
+
+The original desktop game, preserved separately.
+
+### Version 2: Advanced
+
+Responsive edition for computer, tablet, iPhone, and Android.
+
+### Volume 3: Cats With Attitude
+
+Personality-based edition with Calm, Stubborn, and Chonky cats, a couch obstacle, laser-pointer movement, cat sounds, music, mechanic lessons, and level background skins.
+
+## Important files
+
+- `index.html` — version selection screen
+- `classic.html` — Classic game wrapper
+- `advanced.html`, `advanced.css`, `advanced.js` — Advanced edition
+- `volume3.html`, `volume3.css`, `volume3-extra.css`, `volume3.js` — Volume 3
+- `joe-admin.html` — private administration page
+- `.github/workflows/pages.yml` — development GitHub Pages deployment
+
+## Production game
 
 `https://cabando1.github.io/Awesome-Kat-Puzzle-1/`
 
-## Version 1: Classic
-
-Classic preserves the original desktop game that Gail and Joe approved.
-
-- Original layout and gameplay
-- Four rooms with 6, 10, 14 and 18-line goals
-- Cat runway and hatch animation
-- Named next-cat preview
-- Keyboard and touch controls
-- Saved scores and unlock progress
-- Protected wrapper hides the old player-facing Admin Bird control
-
-The frozen backup is stored on the `classic-v1-frozen` branch. Advanced development should not modify `game.html`.
-
-## Version 2: Advanced
-
-Advanced is a separate responsive build for computer, iPad, iPhone and Android.
-
-- No-scroll active gameplay layout
-- Runway, board, next cat and controls stay visible
-- Touch controls ordered `Rotate`, `Down`, `Left`, `Right`
-- Large separate Drop Cat button
-- Translucent outlined landing guide
-- Separate Advanced scores, unlocks and preferences
-- Four original rooms plus browser-local custom rooms
-- Custom cat roster with multiple names, colors and shape assignments
-- Advanced desktop layout remains optional beside Classic
-
-## Controls
-
-Classic keyboard controls:
-
-- Left and right arrows: move
-- Down arrow: soft drop
-- Up arrow or Space: rotate
-- Enter: hard drop
-- P: pause
-
-Advanced touch controls:
-
-- Left thumb: Rotate and Down
-- Right thumb: Left and Right
-- Separate Drop Cat button
-- Swipe or tap directly on the board is also supported
-
-## Deployment
-
-The repository contains a GitHub Actions workflow at `.github/workflows/pages.yml`. It deploys the static site after a push to `main` once GitHub Pages is configured to use **GitHub Actions**.
+Do not point the development deployment at the production repository or production hosting folder.
