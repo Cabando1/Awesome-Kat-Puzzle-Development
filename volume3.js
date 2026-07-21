@@ -47,11 +47,13 @@ const nativePause=HTMLMediaElement.prototype.pause;
 
 HTMLMediaElement.prototype.play=function(...args){
   const media=this;
-  const isLoopedDataAudio=media.loop&&typeof media.src==='string'&&media.src.startsWith('data:audio/');
+  const isLoopedHiss=media.loop&&typeof media.src==='string'&&(
+    media.src.startsWith('data:audio/')||media.src.endsWith('/assets/audio/stubborn-hiss.mp3')
+  );
   let confirmed=false;
   let timer=null;
 
-  if(isLoopedDataAudio&&!media.muted){
+  if(isLoopedHiss&&!media.muted){
     const onPlaying=()=>{
       confirmed=true;
       clearTimeout(timer);
@@ -67,13 +69,13 @@ HTMLMediaElement.prototype.play=function(...args){
   try{
     result=nativePlay.apply(media,args);
   }catch(error){
-    if(isLoopedDataAudio&&!media.muted)startHissFallback(media);
+    if(isLoopedHiss&&!media.muted)startHissFallback(media);
     throw error;
   }
 
   if(result&&typeof result.catch==='function'){
     result.catch(()=>{
-      if(isLoopedDataAudio&&!media.muted)startHissFallback(media);
+      if(isLoopedHiss&&!media.muted)startHissFallback(media);
     });
   }
   return result;
