@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#7057d9">
+<title>Classic Kat Puzzle</title>
+<style>
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#f6f1ff}iframe{display:block;width:100%;height:100%;border:0;background:white}.versions{position:fixed;left:max(10px,env(safe-area-inset-left));bottom:max(10px,env(safe-area-inset-bottom));z-index:20;min-height:42px;padding:8px 13px;border:1px solid rgba(61,45,106,.16);border-radius:13px;background:rgba(255,255,255,.94);color:#29233f;font:850 14px Inter,system-ui,sans-serif;text-decoration:none;display:grid;place-items:center;box-shadow:0 8px 24px rgba(40,30,70,.14)}
+</style>
+</head>
+<body>
+<iframe id="classicFrame" src="game.html?classic=1" title="Classic Awesome Kat Puzzle"></iframe>
+<a class="versions" href="index.html">← Versions</a>
+<script>
+(()=>{'use strict';const frame=document.querySelector('#classicFrame');function protect(){const doc=frame.contentDocument;if(!doc)return;const style=doc.createElement('style');style.textContent='#adminBtn,#adminDialog{display:none!important}';doc.head.appendChild(style);const button=doc.querySelector('#adminBtn');if(button){button.disabled=true;button.hidden=true}const dialog=doc.querySelector('#adminDialog');if(dialog?.open)dialog.close()}frame.addEventListener('load',()=>{protect();setTimeout(protect,200)})})();
+</script>
+</body>
+</html>

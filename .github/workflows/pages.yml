@@ -1,0 +1,55 @@
+name: Deploy Awesome Kat Puzzle
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+      - name: Validate required game files and scripts
+        run: |
+          test -f index.html
+          test -f classic.html
+          test -f game.html
+          test -f advanced.html
+          test -f advanced.css
+          test -f advanced.js
+          test -f joe-admin.html
+          node --check advanced.js
+          node <<'NODE'
+          const fs = require('fs');
+          for (const file of ['index.html', 'classic.html', 'joe-admin.html']) {
+            const html = fs.readFileSync(file, 'utf8');
+            const scripts = [...html.matchAll(/<script>([\s\S]*?)<\/script>/g)];
+            scripts.forEach((match, index) => {
+              try { new Function(match[1]); }
+              catch (error) { throw new Error(`${file} inline script ${index + 1}: ${error.message}`); }
+            });
+          }
+          NODE
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v6
+      - name: Upload static game
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: .
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

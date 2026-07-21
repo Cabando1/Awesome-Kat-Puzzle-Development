@@ -1,0 +1,3 @@
+User-agent: *
+Disallow: /Awesome-Kat-Puzzle-1/joe-admin.html
+Disallow: /joe-admin.html
