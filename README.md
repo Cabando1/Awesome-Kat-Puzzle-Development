@@ -47,6 +47,13 @@ Personality-based edition with Calm, Stubborn, and Chonky cats, a couch obstacle
 Volume 3 starts audio only after player interaction. Effects and music keep separate
 mute preferences. The stubborn hiss stops after a successful move or rotation, a
 drop, pause, room exit, or round end. Audio playback failures do not stop gameplay.
+The first Stubborn cat also plays a one-time arrival hiss and opens its mechanic
+lesson after the cat drops through the runway hatch.
+
+On phones, the runway stays above the board and the gameplay summary, laser, Drop
+Cat button, and four movement controls form a bottom control dock. Wider screens
+keep the board and control panel side by side. Both layouts stay within the visible
+safe area and use the same gameplay code.
 
 ## Production game
 

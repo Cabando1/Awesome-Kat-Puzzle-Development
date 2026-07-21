@@ -74,6 +74,19 @@ jobs:
           if (/data:audio\/mpeg;base64/.test(volume3Source)) {
             throw new Error('Volume 3 still contains embedded audio data.');
           }
+          if (!volume3Source.includes('arrivalHiss.play()')) {
+            throw new Error('Stubborn-cat arrival hiss is missing.');
+          }
+          if (!volume3Source.includes('Ve("stubborn"')) {
+            throw new Error('The first-time Stubborn lesson is missing.');
+          }
+
+          const requiredControls = ['rotate', 'down', 'left', 'right', 'drop'];
+          for (const control of requiredControls) {
+            if (!volume3Html.includes(`data-action="${control}"`)) {
+              throw new Error(`Volume 3 is missing the ${control} control.`);
+            }
+          }
           NODE
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v6
