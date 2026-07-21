@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#7057d9">
+<title>Advanced Kat Puzzle</title>
+<link rel="stylesheet" href="advanced.css">
+<style>
+/* The hatch is on the right, so Advanced runway cats should face right. */
+.walker-body{transform:scaleX(-1);transform-origin:center}
+.play-nav{display:flex;gap:6px;min-width:0}.play-nav .top-btn{white-space:nowrap}.nav-short{display:none}
+@media(max-width:460px){.nav-long{display:none}.nav-short{display:inline}.play-nav{gap:4px}.play-nav .top-btn{width:38px;padding:0}.top-actions{gap:4px}.top-actions .top-btn{padding:6px 8px}.room-chip strong{font-size:.78rem}.room-chip span{font-size:.58rem}}
+</style>
+</head>
+<body data-theme="lavender" data-screen="lobby">
+<div id="app">
+  <section id="lobby" class="lobby-screen">
+    <div class="lobby-card">
+      <div class="lobby-top"><a class="small-btn" href="index.html">← Versions</a><button class="small-btn" id="lobbySound" type="button">🔊 Sound</button></div>
+      <div class="paw">🐾</div><p class="eyebrow">Version 2 · Advanced</p><h1>Choose a cat room</h1>
+      <p class="lead">A polished touch-first game with the same cat runway, line goals and progressive speed.</p>
+      <div class="lobby-settings"><label>Theme<select id="themeSelect"><option value="lavender">Lavender Lounge</option><option value="sunset">Sunset Café</option><option value="mint">Mint Garden</option><option value="midnight">Midnight Zoomies</option></select></label></div>
+      <div id="roomCards" class="room-cards"></div>
+      <button id="startBtn" class="primary-btn" type="button">Play selected room</button>
+      <p class="device-note" id="deviceNote"></p>
+    </div>
+  </section>
+
+  <section id="playScreen" class="play-screen hidden" aria-label="Advanced Kat Puzzle game">
+    <header class="play-topbar">
+      <div class="play-nav">
+        <a class="top-btn" href="index.html" aria-label="Return to version dashboard" title="Versions"><span class="nav-long">← Versions</span><span class="nav-short">⇦</span></a>
+        <button id="menuBtn" class="top-btn" type="button" aria-label="Return to Advanced room menu" title="Rooms"><span class="nav-long">Rooms</span><span class="nav-short">☰</span></button>
+      </div>
+      <div class="room-chip"><strong id="roomName">Cozy Box</strong><span id="roomProgress">0 / 6 lines</span></div>
+      <div class="top-actions"><button id="pauseBtn" class="top-btn" type="button">Pause</button><button id="soundBtn" class="top-btn" type="button">🔊</button></div>
+    </header>
+
+    <div class="runway" id="runway">
+      <span class="cloud c1">☁</span><span class="cloud c2">☁</span><span class="cloud c3">☁</span><span class="runway-title">Cat delivery runway</span>
+      <div class="walker" id="walker"><div class="walker-body" id="walkerBody"><div class="walker-head"><span>••</span></div><i class="walker-tail"></i><i class="walker-leg l1"></i><i class="walker-leg l2"></i></div></div><div class="hatch"></div>
+    </div>
+
+    <main class="game-stage">
+      <section class="board-panel"><div class="canvas-wrap"><canvas id="game" width="320" height="576" aria-label="Falling cat puzzle board"></canvas><div class="game-overlay hidden" id="overlay"><div><div class="overlay-face" id="overlayFace">😻</div><h2 id="overlayTitle">Purrfect!</h2><p id="overlayText"></p><button id="overlayBtn" class="primary-btn" type="button">Next room</button></div></div></div></section>
+
+      <aside class="control-panel">
+        <div class="next-card"><canvas id="nextCanvas" width="150" height="78" aria-label="Next cat preview"></canvas><div class="next-copy"><span>Next cat</span><strong id="nextName">Marmalade</strong><small id="nextShape">I-shape</small></div></div>
+        <div class="compact-stats"><div><span>Goal</span><strong id="goalStat">0/6</strong></div><div><span>Score</span><strong id="scoreStat">0</strong></div><div class="best-stat"><span>Best</span><strong id="bestStat">0</strong></div><div><span>Streak</span><strong id="streakStat">0</strong></div></div>
+        <div class="goal-track"><span id="goalBar"></span></div>
+        <button class="drop-btn" data-action="drop" type="button">Drop cat</button>
+        <div class="thumb-controls" aria-label="Touch controls">
+          <button data-action="rotate" type="button" aria-label="Rotate">↻<span>Rotate</span></button><button data-action="down" type="button" aria-label="Move down">↓<span>Down</span></button><i aria-hidden="true"></i><button data-action="left" type="button" aria-label="Move left">←<span>Left</span></button><button data-action="right" type="button" aria-label="Move right">→<span>Right</span></button>
+        </div>
+        <p class="keyboard-help">Keyboard: arrows move · ↑ or Space rotates · Enter drops · P pauses</p>
+      </aside>
+    </main>
+  </section>
+  <div class="toast" id="toast" aria-live="polite"></div>
+</div>
+<script src="advanced.js"></script>
+</body>
+</html>

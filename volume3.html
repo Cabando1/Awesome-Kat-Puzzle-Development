@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#b95c3d">
+<title>Cats With Attitude · Volume 3</title>
+<link rel="stylesheet" href="volume3.css?v=3">
+</head>
+<body data-screen="lobby">
+<div id="app">
+  <section id="lobby" class="lobby-screen">
+    <div class="lobby-card">
+      <div class="lobby-top">
+        <a class="small-btn" href="index.html">← Versions</a>
+        <button class="small-btn" id="lobbySound" type="button">🔊 Effects</button>
+      </div>
+      <div class="paw" id="pawLogo" aria-label="Paw logo">🐾</div>
+      <p class="eyebrow">Volume 3 · Cats With Attitude</p>
+      <h1>Cats With Attitude</h1>
+      <p class="lead">A new personality-driven edition where every cat has a personality, a clearly marked three-wide couch is already in the way, and a laser pointer can rescue a difficult landing.</p>
+
+      <section class="room-preview" aria-labelledby="roomTitle">
+        <div>
+          <p class="eyebrow">Featured room</p>
+          <h2 id="roomTitle">Personality Playroom</h2>
+          <p>Clear 8 lines while learning Calm, Stubborn, and Chonky cats.</p>
+        </div>
+        <div class="room-meta"><span>8-line goal</span><span>2 laser uses</span><span>3×2 couch obstacle</span></div>
+      </section>
+
+      <div class="feature-grid">
+        <article><strong>😺 Calm</strong><span>Behaves normally.</span></article>
+        <article><strong>🙀 Stubborn</strong><span>May refuse to rotate.</span></article>
+        <article><strong>🐈 Chonky</strong><span>Occupies five spaces.</span></article>
+        <article><strong>🔴 Laser</strong><span>Shows a red landing dot; the cat follows it.</span></article>
+      </div>
+
+      <button id="briefingBtn" class="primary-btn" type="button">Review changes and start</button>
+      <p class="device-note">Volume 1 and Volume 2 remain unchanged. Music and cat effects begin after you start the room.</p>
+    </div>
+  </section>
+
+  <section id="playScreen" class="play-screen hidden" aria-label="Cats With Attitude game">
+    <header class="play-topbar">
+      <div class="play-nav">
+        <a class="top-btn" href="index.html" aria-label="Return to version dashboard">← Versions</a>
+        <button id="menuBtn" class="top-btn" type="button">Room</button>
+      </div>
+      <div class="room-chip"><strong>Personality Playroom</strong><span id="roomProgress">0 / 8 lines</span></div>
+      <div class="top-actions">
+        <button id="helpBtn" class="top-btn help-btn" type="button" aria-label="Open mechanic guide">?</button>
+        <button id="pauseBtn" class="top-btn" type="button">Pause</button>
+        <button id="soundBtn" class="top-btn" type="button" aria-label="Toggle sound">🔊</button>
+      </div>
+    </header>
+
+    <div class="runway" id="runway">
+      <span class="cloud c1">☁</span><span class="cloud c2">☁</span><span class="cloud c3">☁</span>
+      <span class="runway-title">Personality check-in</span>
+      <div class="walker" id="walker"><div class="walker-body" id="walkerBody"><div class="walker-head"><span>••</span></div><i class="walker-tail"></i><i class="walker-leg l1"></i><i class="walker-leg l2"></i></div></div><div class="hatch"></div>
+    </div>
+
+    <main class="game-stage">
+      <section class="board-panel">
+        <div class="canvas-wrap">
+          <canvas id="game" width="320" height="576" aria-label="Falling cat puzzle board"></canvas>
+          <div class="game-overlay hidden" id="endOverlay"><div><div class="overlay-face" id="overlayFace">😻</div><h2 id="overlayTitle">Purrfect!</h2><p id="overlayText"></p><button id="overlayBtn" class="primary-btn" type="button">Play again</button></div></div>
+        </div>
+      </section>
+
+      <aside class="control-panel">
+        <section class="next-card">
+          <canvas id="nextCanvas" width="132" height="82" aria-label="Next cat preview"></canvas>
+          <div class="next-copy"><span>Next cat</span><strong id="nextName">Marmalade</strong><small id="nextShape">Calm · T-shape</small></div>
+        </section>
+
+        <section class="trait-card" id="traitCard" data-trait="calm">
+          <div class="trait-icon" id="traitIcon">😺</div>
+          <div><span>Current personality</span><strong id="traitName">Calm</strong><p id="traitDescription">Behaves normally.</p></div>
+        </section>
+
+        <div class="compact-stats">
+          <div><span>Goal</span><strong id="goalStat">0/8</strong></div>
+          <div><span>Score</span><strong id="scoreStat">0</strong></div>
+          <div><span>Best</span><strong id="bestStat">0</strong></div>
+          <div><span>Streak</span><strong id="streakStat">0</strong></div>
+        </div>
+        <div class="goal-track"><span id="goalBar"></span></div>
+
+        <button id="laserBtn" class="power-btn" type="button"><span>🔴 Laser pointer</span><strong id="laserCount">2 uses</strong></button>
+        <button class="drop-btn" data-action="drop" type="button">Drop cat</button>
+        <div class="thumb-controls" aria-label="Touch controls">
+          <button data-action="rotate" type="button" aria-label="Rotate">↻<span>Rotate</span></button>
+          <button data-action="down" type="button" aria-label="Move down">↓<span>Down</span></button>
+          <i aria-hidden="true"></i>
+          <button data-action="left" type="button" aria-label="Move left">←<span>Left</span></button>
+          <button data-action="right" type="button" aria-label="Move right">→<span>Right</span></button>
+        </div>
+        <p class="keyboard-help">Keyboard: arrows move · ↑ or Space rotates · Enter drops · L uses laser · P pauses</p>
+      </aside>
+    </main>
+  </section>
+
+  <div class="modal hidden" id="briefingModal" role="dialog" aria-modal="true" aria-labelledby="briefingTitle">
+    <div class="modal-card">
+      <p class="eyebrow">Before this room begins</p>
+      <h2 id="briefingTitle">What’s new in Personality Playroom?</h2>
+      <div class="guide-list">
+        <article><span>😺</span><div><strong>Calm cats</strong><p>Behave normally and rotate every time.</p></div></article>
+        <article><span>🙀</span><div><strong>Stubborn cats</strong><p>May refuse a rotation. Try again or move the cat first.</p></div></article>
+        <article><span>🐈</span><div><strong>Chonky cats</strong><p>Occupy five spaces instead of four. Watch the landing guide.</p></div></article>
+        <article><span>🛋️</span><div><strong>Couch</strong><p>The couch is a permanent obstacle. Build around it.</p></div></article>
+        <article><span>🔴</span><div><strong>Laser pointer</strong><p>A red dot marks the safest landing and the active cat follows it into place. You have two uses.</p></div></article>
+      </div>
+      <label class="remember-row"><input id="skipBriefing" type="checkbox"> Skip this briefing next time</label>
+      <div class="modal-actions"><button id="cancelBriefing" class="secondary-btn" type="button">Not yet</button><button id="startBtn" class="primary-btn" type="button">I understand — Start room</button></div>
+    </div>
+  </div>
+
+  <div class="modal hidden" id="helpModal" role="dialog" aria-modal="true" aria-labelledby="helpTitle">
+    <div class="modal-card compact-modal">
+      <p class="eyebrow">Mechanic guide</p>
+      <h2 id="helpTitle">Cats With Attitude</h2>
+      <div class="guide-list mini">
+        <article><span>😺</span><div><strong>Calm</strong><p>Normal controls.</p></div></article>
+        <article><span>🙀</span><div><strong>Stubborn</strong><p>May refuse rotation.</p></div></article>
+        <article><span>🐈</span><div><strong>Chonky</strong><p>Five occupied spaces.</p></div></article>
+        <article><span>🛋️</span><div><strong>Couch</strong><p>Permanent blocked spaces.</p></div></article>
+        <article><span>🔴</span><div><strong>Laser</strong><p>Red dot marks landing; cat follows.</p></div></article>
+      </div>
+      <button id="closeHelp" class="primary-btn" type="button">Return to game</button>
+    </div>
+  </div>
+
+  <div class="modal hidden" id="lessonModal" role="dialog" aria-modal="true" aria-labelledby="lessonTitle">
+    <div class="modal-card lesson-card"><div class="lesson-icon" id="lessonIcon">🙀</div><h2 id="lessonTitle">Stubborn cat</h2><p id="lessonText"></p><button id="lessonBtn" class="primary-btn" type="button">Got it</button></div>
+  </div>
+
+
+  <div class="modal hidden" id="adminModal" role="dialog" aria-modal="true" aria-labelledby="adminTitle">
+    <div class="modal-card compact-modal">
+      <span class="private-admin-badge">Private test admin</span>
+      <h2 id="adminTitle">Level background skins</h2>
+      <p class="skin-admin-note">Upload a wallpaper for the area around the game. The board remains readable and the image is stored on this device. Future levels can use the same level-keyed system.</p>
+      <div class="skin-admin-grid">
+        <label>Level
+          <select id="skinLevel"><option value="personality">Personality Playroom</option></select>
+        </label>
+        <label>Image fit
+          <select id="skinFit"><option value="cover">Fill screen</option><option value="contain">Show whole image</option></select>
+        </label>
+        <label style="grid-column:1/-1">Upload JPG, PNG, or WebP
+          <input id="skinUpload" type="file" accept="image/jpeg,image/png,image/webp">
+        </label>
+      </div>
+      <div class="skin-preview" id="skinPreview">No custom skin uploaded</div>
+      <div class="skin-status" id="skinStatus"></div>
+      <div class="modal-actions">
+        <button id="clearSkin" class="secondary-btn" type="button">Remove skin</button>
+        <button id="closeAdmin" class="primary-btn" type="button">Done</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" aria-live="polite"></div>
+</div>
+<script src="volume3-hiss.js?v=3"></script><script src="volume3-laser.js?v=3"></script><script src="volume3.js?v=3"></script>
+</body>
+</html>

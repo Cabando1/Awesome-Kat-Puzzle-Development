@@ -1,0 +1,17 @@
+/* Audio controls added for the self-contained test build. */
+.lobby-top{flex-wrap:wrap}
+@media(max-width:430px){.top-actions{gap:3px}.top-actions .top-btn{min-width:33px;padding:4px}.room-chip strong{font-size:.68rem}.play-nav .top-btn:first-child{display:none}}
+
+/* Volume 3.1 clarity, laser guide, and private skin-admin additions. */
+:root{--skin-image:none;--skin-position:center;--skin-size:cover}
+html,body{background-image:linear-gradient(rgba(255,248,239,.78),rgba(239,216,200,.78)),var(--skin-image);background-position:center,var(--skin-position);background-size:cover,var(--skin-size);background-attachment:fixed}
+.play-screen,.lobby-screen{position:relative;isolation:isolate}
+.play-screen:before,.lobby-screen:before{content:"";position:absolute;inset:0;z-index:-1;background-image:linear-gradient(rgba(255,248,239,.72),rgba(239,216,200,.72)),var(--skin-image);background-position:center,var(--skin-position);background-size:cover,var(--skin-size);pointer-events:none}
+.skin-admin-note{margin:0 0 14px;color:var(--muted);font-size:.82rem;line-height:1.45}
+.skin-admin-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.skin-admin-grid label{display:grid;gap:6px;color:var(--muted);font-size:.78rem;font-weight:850}
+.skin-admin-grid input,.skin-admin-grid select{min-height:44px;border:1px solid var(--line);border-radius:13px;padding:8px;background:white;color:var(--ink)}
+.skin-preview{height:170px;margin:14px 0;border:2px dashed var(--line);border-radius:18px;background-image:linear-gradient(rgba(255,255,255,.22),rgba(255,255,255,.22)),var(--skin-image);background-position:center,var(--skin-position);background-size:cover,var(--skin-size);display:grid;place-items:center;color:var(--muted);font-weight:850;text-align:center;padding:12px}
+.skin-status{min-height:20px;color:var(--muted);font-size:.78rem}
+.private-admin-badge{display:inline-block;margin-bottom:8px;padding:6px 9px;border-radius:999px;background:#f2e7dc;color:#6c4c3e;font-size:.68rem;font-weight:900;letter-spacing:.08em;text-transform:uppercase}
+@media(max-width:600px){.skin-admin-grid{grid-template-columns:1fr}.skin-preview{height:125px}}
