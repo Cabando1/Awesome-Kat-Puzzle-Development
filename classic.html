@@ -11,7 +11,7 @@
 </head>
 <body>
 <iframe id="classicFrame" src="game.html?classic=1" title="Classic Awesome Kat Puzzle"></iframe>
-<a class="versions" href="index.html">← Versions</a>
+<a class="versions" href="index.html?v=24">← Versions</a>
 <script>
 (()=>{'use strict';const frame=document.querySelector('#classicFrame');function protect(){const doc=frame.contentDocument;if(!doc)return;const style=doc.createElement('style');style.textContent='#adminBtn,#adminDialog{display:none!important}';doc.head.appendChild(style);const button=doc.querySelector('#adminBtn');if(button){button.disabled=true;button.hidden=true}const dialog=doc.querySelector('#adminDialog');if(dialog?.open)dialog.close()}frame.addEventListener('load',()=>{protect();setTimeout(protect,200)})})();
 </script>

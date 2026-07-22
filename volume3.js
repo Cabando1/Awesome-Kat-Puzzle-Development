@@ -44,12 +44,40 @@ function startHissFallback(media){
 
 const nativePlay=HTMLMediaElement.prototype.play;
 const nativePause=HTMLMediaElement.prototype.pause;
+const celebrationTimers=new WeakMap();
+
+function stopCelebration(media){
+  clearTimeout(celebrationTimers.get(media));
+  celebrationTimers.delete(media);
+  try{
+    nativePause.call(media);
+    media.currentTime=0;
+  }catch{}
+}
 
 HTMLMediaElement.prototype.play=function(...args){
   const media=this;
+  const source=media.currentSrc||media.src||'';
+  const isSoundWarmup=media.muted&&(
+    source.includes('/audio/meow-')
+    ||source.includes('/assets/audio/levels/sfx-')
+    ||source.includes('/assets/audio/stubborn-hiss.mp3')
+    ||source.includes('/assets/audio/laser-pointer.mp3')
+  );
+
+  // The game core used muted play calls to prewarm every effect. Mobile
+  // Safari can leak those clips into the audible mix, most noticeably the
+  // long level-complete cheer. A resolved no-op still satisfies the prewarm
+  // routine without actually starting any media.
+  if(isSoundWarmup){
+    try{nativePause.call(media);media.currentTime=0}catch{}
+    return Promise.resolve();
+  }
+
   const isLoopedHiss=media.loop&&typeof media.src==='string'&&(
     media.src.startsWith('data:audio/')||media.src.endsWith('/assets/audio/stubborn-hiss.mp3')
   );
+  const isCelebration=source.includes('/assets/audio/levels/sfx-level-complete.mp3');
   let confirmed=false;
   let timer=null;
 
@@ -73,6 +101,11 @@ HTMLMediaElement.prototype.play=function(...args){
     throw error;
   }
 
+  if(isCelebration){
+    clearTimeout(celebrationTimers.get(media));
+    celebrationTimers.set(media,setTimeout(()=>stopCelebration(media),1800));
+  }
+
   if(result&&typeof result.catch==='function'){
     result.catch(()=>{
       if(isLoopedHiss&&!media.muted)startHissFallback(media);
@@ -83,6 +116,8 @@ HTMLMediaElement.prototype.play=function(...args){
 
 HTMLMediaElement.prototype.pause=function(...args){
   stopHissFallback(this);
+  clearTimeout(celebrationTimers.get(this));
+  celebrationTimers.delete(this);
   return nativePause.apply(this,args);
 };
 
@@ -93,15 +128,39 @@ function installBackgroundMusic(){
     cafe:'assets/audio/levels/music-level-3-cardboard-castle.mp3',
     zoomies:'assets/audio/levels/music-level-4-midnight-zoomies.mp3'
   };
-  const music=new Audio(roomMusic.personality);
+
+  // iPhone Safari can keep a previous page alive in its back/forward cache.
+  // Retire every older game-music element before creating the one controller
+  // allowed to play in this document.
+  const oldPlayers=new Set([
+    window.__akpV3BackgroundMusic,
+    ...document.querySelectorAll('audio#backgroundMusic,audio[data-akp-music]')
+  ]);
+  oldPlayers.forEach(player=>{
+    if(!player)return;
+    try{player.pause();player.removeAttribute('src');player.load()}catch{}
+    if(player.parentNode)player.remove();
+  });
+
+  const music=new Audio();
   music.id='backgroundMusic';
+  music.dataset.akpMusic='true';
+  music.dataset.room='personality';
   music.setAttribute('aria-hidden','true');
+  music.setAttribute('playsinline','');
   music.style.display='none';
   music.preload='auto';
   music.loop=true;
   music.volume=.3;
+  music.src=roomMusic.personality;
   document.body.appendChild(music);
   window.__akpV3BackgroundMusic=music;
+
+  const ownerId=`${Date.now()}-${Math.random().toString(36).slice(2)}`;
+  const ownerKey='akpV3MusicOwner';
+  const musicChannel='BroadcastChannel'in window?new BroadcastChannel('akp-v3-music'):null;
+  let playPending=null;
+  let syncQueued=false;
 
   const musicEnabled=()=>{
     try{return !JSON.parse(localStorage.getItem('akpV3MusicMuted')||'false')}
@@ -117,25 +176,41 @@ function installBackgroundMusic(){
       &&!modalIsOpen()
       &&(!endOverlay||endOverlay.classList.contains('hidden'));
   };
+  const stop=()=>{
+    if(!music.paused)music.pause();
+    playPending=null;
+  };
+  const claimPhoneAudio=()=>{
+    const claim={id:ownerId,at:Date.now()};
+    musicChannel?.postMessage({type:'claim',...claim});
+    try{localStorage.setItem(ownerKey,JSON.stringify(claim))}catch{}
+  };
+  const play=()=>{
+    if(!music.paused||playPending)return;
+    claimPhoneAudio();
+    const result=music.play();
+    if(result&&typeof result.then==='function'){
+      playPending=result;
+      result.catch(()=>{}).finally(()=>{playPending=null});
+    }
+  };
   const selectRoomTrack=()=>{
     const room=document.body.dataset.room||'personality';
     const source=roomMusic[room]||roomMusic.personality;
     if(music.dataset.room===room)return;
-    const wasPlaying=!music.paused;
-    music.pause();
+    stop();
     music.src=source;
     music.dataset.room=room;
     music.load();
-    if(wasPlaying&&shouldPlay())music.play().catch(()=>{});
   };
   const sync=()=>{
     selectRoomTrack();
-    if(shouldPlay()){
-      const result=music.play();
-      if(result&&typeof result.catch==='function')result.catch(()=>{});
-    }else{
-      music.pause();
-    }
+    shouldPlay()?play():stop();
+  };
+  const scheduleSync=()=>{
+    if(syncQueued)return;
+    syncQueued=true;
+    requestAnimationFrame(()=>{syncQueued=false;sync()});
   };
 
   [
@@ -143,10 +218,21 @@ function installBackgroundMusic(){
     '#menuBtn','#helpBtn','#closeHelp','#lessonBtn','#overlayBtn','#closeAdmin'
   ].forEach(selector=>document.querySelector(selector)?.addEventListener('click',sync));
 
-  const observer=new MutationObserver(sync);
+  const observer=new MutationObserver(scheduleSync);
   observer.observe(document.body,{attributes:true,subtree:true,attributeFilter:['class','data-screen','data-room']});
-  document.addEventListener('visibilitychange',()=>document.hidden?music.pause():sync());
-  window.addEventListener('pagehide',()=>music.pause());
+  musicChannel?.addEventListener('message',event=>{
+    if(event.data?.type==='claim'&&event.data.id!==ownerId)stop();
+  });
+  window.addEventListener('storage',event=>{
+    if(event.key!==ownerKey||!event.newValue)return;
+    try{
+      const claim=JSON.parse(event.newValue);
+      if(claim.id!==ownerId&&Date.now()-claim.at<10000)stop();
+    }catch{}
+  });
+  document.addEventListener('visibilitychange',()=>document.hidden?stop():scheduleSync());
+  window.addEventListener('pagehide',stop);
+  window.addEventListener('pageshow',scheduleSync);
   sync();
 }
 

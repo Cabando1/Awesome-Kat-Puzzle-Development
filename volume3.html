@@ -32,7 +32,7 @@
 <meta name="twitter:description" content="Stack cats, master their personalities, and unlock four playful musical rooms.">
 <meta name="twitter:image" content="https://www.purrfectpuzzles.com/assets/brand/purrfect-puzzles-share-1200x630.png">
 <title>Purrfect Puzzles — Cat Puzzle Game</title>
-<link rel="stylesheet" href="volume3.css?v=20"><link rel="stylesheet" href="volume3-extra.css?v=20">
+<link rel="stylesheet" href="volume3.css?v=22"><link rel="stylesheet" href="volume3-extra.css?v=22">
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"VideoGame","name":"Purrfect Puzzles","url":"https://www.purrfectpuzzles.com/","image":"https://www.purrfectpuzzles.com/assets/brand/purrfect-puzzles-share-1200x630.png","description":"A cozy mobile cat puzzle game with four themed rooms, unique cat personalities, playful obstacles, music, and touch controls.","genre":["Puzzle","Casual"],"playMode":"SinglePlayer","applicationCategory":"Game","operatingSystem":"Web browser","inLanguage":"en-US"}</script>
 </head>
 <body data-screen="lobby">
@@ -73,7 +73,7 @@
   <section id="playScreen" class="play-screen hidden" aria-label="Purrfect Puzzles game">
     <header class="play-topbar">
       <div class="play-nav">
-        <a class="top-btn compact-nav" href="index.html" aria-label="Return to version dashboard">←</a>
+        <a class="top-btn compact-nav" href="index.html?v=24" aria-label="Return to version dashboard">←</a>
         <button id="menuBtn" class="top-btn compact-nav" type="button" aria-label="Room menu">☰</button>
       </div>
       <div class="room-chip"><strong id="roomName">Cozy Living Room</strong><span id="roomProgress">0 / 8 lines</span><div class="level-path" aria-label="Four-room progress"><i class="active" data-level-step="0">1</i><i data-level-step="1">2</i><i data-level-step="2">3</i><i data-level-step="3">4</i></div></div>
@@ -92,7 +92,20 @@
 
     <main class="game-stage">
       <section class="board-panel">
+        <div class="cozy-room-scene" aria-hidden="true">
+          <div class="cozy-wall-sparkles"><i></i><i></i><i></i><i></i><i></i></div>
+          <div class="cozy-picture">
+            <span class="cozy-picture-pin"></span>
+            <img src="assets/cats/standard/poppy.png" alt="">
+          </div>
+          <div class="cozy-plant"><span></span><i></i><i></i><i></i><i></i><b></b></div>
+          <div class="cozy-floor"></div>
+          <div class="cozy-rug"></div>
+          <div class="cozy-yarn"><i></i><i></i><i></i><span></span></div>
+          <div class="cozy-cat-box"><img src="assets/cats/standard/pepper.png" alt=""><span>♥</span></div>
+        </div>
         <div class="canvas-wrap">
+          <div class="cat-frame-crown" aria-hidden="true"><i></i><span>• ᴗ •</span><i></i></div>
           <canvas id="game" width="320" height="576" aria-label="Falling cat puzzle board"></canvas>
           <div class="game-overlay hidden" id="endOverlay"><div><div class="overlay-face" id="overlayFace">😻</div><h2 id="overlayTitle">Purrfect!</h2><div class="overlay-stars" id="overlayStars" aria-label="Room stars"></div><p id="overlayText"></p><button id="overlayBtn" class="primary-btn" type="button">Play again</button></div></div>
         </div>
@@ -206,6 +219,6 @@
 
   <div class="toast" id="toast" aria-live="polite"></div>
 </div>
-<script src="volume3-core.js?v=20"></script><script src="volume3.js?v=20"></script>
+<script src="volume3-core.js?v=22"></script><script src="volume3.js?v=23"></script>
 </body>
 </html>
