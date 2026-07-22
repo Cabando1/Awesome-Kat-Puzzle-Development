@@ -87,7 +87,13 @@ HTMLMediaElement.prototype.pause=function(...args){
 };
 
 function installBackgroundMusic(){
-  const music=new Audio('audio/quirky-loop.mp3');
+  const roomMusic={
+    personality:'audio/quirky-loop.mp3',
+    scratchpost:'assets/audio/levels/music-level-2-yarn-room.mp3',
+    cafe:'assets/audio/levels/music-level-3-cardboard-castle.mp3',
+    zoomies:'assets/audio/levels/music-level-4-midnight-zoomies.mp3'
+  };
+  const music=new Audio(roomMusic.personality);
   music.id='backgroundMusic';
   music.setAttribute('aria-hidden','true');
   music.style.display='none';
@@ -111,7 +117,19 @@ function installBackgroundMusic(){
       &&!modalIsOpen()
       &&(!endOverlay||endOverlay.classList.contains('hidden'));
   };
+  const selectRoomTrack=()=>{
+    const room=document.body.dataset.room||'personality';
+    const source=roomMusic[room]||roomMusic.personality;
+    if(music.dataset.room===room)return;
+    const wasPlaying=!music.paused;
+    music.pause();
+    music.src=source;
+    music.dataset.room=room;
+    music.load();
+    if(wasPlaying&&shouldPlay())music.play().catch(()=>{});
+  };
   const sync=()=>{
+    selectRoomTrack();
     if(shouldPlay()){
       const result=music.play();
       if(result&&typeof result.catch==='function')result.catch(()=>{});
@@ -126,27 +144,16 @@ function installBackgroundMusic(){
   ].forEach(selector=>document.querySelector(selector)?.addEventListener('click',sync));
 
   const observer=new MutationObserver(sync);
-  observer.observe(document.body,{attributes:true,subtree:true,attributeFilter:['class','data-screen']});
+  observer.observe(document.body,{attributes:true,subtree:true,attributeFilter:['class','data-screen','data-room']});
   document.addEventListener('visibilitychange',()=>document.hidden?music.pause():sync());
   window.addEventListener('pagehide',()=>music.pause());
   sync();
 }
 
 try{
-  const value=window.V3_CODE||'';
-  const binary=window.atob(value);
-  let source;
-  if(typeof TextDecoder==='function'){
-    const bytes=new Uint8Array(binary.length);
-    for(let i=0;i<binary.length;i++)bytes[i]=binary.charCodeAt(i);
-    source=new TextDecoder('utf-8').decode(bytes);
-  }else{
-    let encoded='';
-    for(let i=0;i<binary.length;i++)encoded+='%'+binary.charCodeAt(i).toString(16).padStart(2,'0');
-    source=decodeURIComponent(encoded);
+  if(!document.querySelector('#lobbyMusic')||!document.querySelector('#musicBtn')){
+    throw new Error('The Purrfect Puzzles game core did not initialize.');
   }
-  delete window.V3_CODE;
-  (0,eval)(source);
   installBackgroundMusic();
 }catch(error){
   console.error('Volume 3 startup failed',error);

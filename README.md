@@ -31,16 +31,17 @@ Responsive edition for computer, tablet, iPhone, and Android.
 
 ### Volume 3: Purrfect Puzzles
 
-Personality-based edition with Calm, Stubborn, and Chonky cats, a couch obstacle, laser-pointer movement, cat sounds, music, mechanic lessons, four progressively faster levels, and per-level background skins.
+Personality-based edition with Calm, Stubborn, Chonky, and Zoomie cats, room-specific obstacles, laser-pointer movement, cat sounds, four music tracks, mechanic lessons, star ratings, four progressively faster levels, and per-level background skins.
 
 ## Important files
 
 - `index.html` — version selection screen
 - `classic.html` — Classic game wrapper
 - `advanced.html`, `advanced.css`, `advanced.js` — Advanced edition
-- `volume3.html`, `volume3.css`, `volume3-extra.css`, `volume3.js` — Volume 3
+- `volume3.html`, `volume3.css`, `volume3-extra.css`, `volume3-core.js`, `volume3.js` — Volume 3
 - `assets/audio/stubborn-hiss.mp3` — looping stubborn-cat hiss used after a refused rotation
 - `assets/audio/laser-pointer.mp3` — looping laser sound used while the red landing dot is active
+- `assets/audio/levels` — themed Level 2–4 music and progression effects
 - `assets/cats/standard`, `assets/cats/stubborn`, `assets/cats/chonky` — full-cat artwork for all six named cats and three personality types
 - `joe-admin.html` — private administration page
 - `.github/workflows/pages.yml` — development GitHub Pages deployment
@@ -57,11 +58,13 @@ Drop Cat button, and four movement controls form a bottom control dock. Wider sc
 keep the board and control panel side by side. Both layouts stay within the visible
 safe area and use the same gameplay code.
 
-Volume 3 advances through four rooms: Personality Playroom, Scratchpost
-Shuffle, Cat Café Chaos, and Midnight Zoomies. Each level has a higher line
-goal, faster automatic falling, and a larger mix of Stubborn and Chonky cats.
-Laser uses reset to two at the beginning of every level. Finishing a room opens
-the next one; losing restarts the current level.
+Volume 3 advances through four rooms: Cozy Living Room, Yarn Room, Cardboard
+Castle, and Midnight Zoomies. Each room has unique music, a higher line goal,
+faster automatic falling, and its own board mechanic. Yarn and cardboard clear
+with completed rows for bonus points; the final room adds fast-falling Zoomie
+cats and combines earlier obstacles. Laser uses reset to two at the beginning
+of every level. Finishing a room awards up to three stars and opens the next one;
+losing restarts the current level.
 
 ## Production game
 
