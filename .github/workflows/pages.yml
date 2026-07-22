@@ -31,8 +31,18 @@ jobs:
           test -f advanced.html
           test -f advanced.css
           test -f advanced.js
+          test -f volume3.html
+          test -f volume3.js
+          test -f assets/audio/stubborn-hiss.mp3
+          test -f assets/audio/laser-pointer.mp3
+          for personality in standard stubborn chonky; do
+            for cat in marmalade poppy pepper biscuit pickle socks; do
+              test -f "assets/cats/$personality/$cat.png"
+            done
+          done
           test -f joe-admin.html
           node --check advanced.js
+          node --check volume3.js
           node <<'NODE'
           const fs = require('fs');
           for (const file of ['index.html', 'classic.html', 'joe-admin.html']) {
@@ -42,6 +52,61 @@ jobs:
               try { new Function(match[1]); }
               catch (error) { throw new Error(`${file} inline script ${index + 1}: ${error.message}`); }
             });
+          }
+
+          const volume3Html = fs.readFileSync('volume3.html', 'utf8');
+          if (/volume3-(?:hiss|laser)-\d+\.js/.test(volume3Html)) {
+            throw new Error('Volume 3 must load hiss and laser sounds from normal audio files.');
+          }
+
+          let encodedGame = '';
+          for (let part = 1; part <= 4; part += 1) {
+            const fragment = fs.readFileSync(`volume3-code-${part}.js`, 'utf8');
+            const match = fragment.match(/(?:=|\+=)'([^']*)';/);
+            if (!match) throw new Error(`Could not parse Volume 3 code fragment ${part}.`);
+            encodedGame += match[1];
+          }
+          const volume3Source = Buffer.from(encodedGame, 'base64').toString('utf8');
+          new Function(volume3Source);
+          for (const audioPath of [
+            'assets/audio/stubborn-hiss.mp3',
+            'assets/audio/laser-pointer.mp3',
+          ]) {
+            if (!volume3Source.includes(audioPath)) {
+              throw new Error(`Volume 3 does not reference ${audioPath}.`);
+            }
+          }
+          if (/data:audio\/mpeg;base64/.test(volume3Source)) {
+            throw new Error('Volume 3 still contains embedded audio data.');
+          }
+          if (!volume3Source.includes('arrivalHiss.play()')) {
+            throw new Error('Stubborn-cat arrival hiss is missing.');
+          }
+          if (!volume3Source.includes('Ve("stubborn"')) {
+            throw new Error('The first-time Stubborn lesson is missing.');
+          }
+          for (const levelFeature of [
+            'currentRoomLevel().goal',
+            'currentRoomLevel().speed',
+            'roomLevelIndex++',
+            'D=2',
+            'assets/cats/',
+          ]) {
+            if (!volume3Source.includes(levelFeature)) {
+              throw new Error(`Volume 3 is missing level or cat-art behavior: ${levelFeature}`);
+            }
+          }
+
+          const requiredControls = ['rotate', 'down', 'left', 'right', 'drop'];
+          for (const control of requiredControls) {
+            if (!volume3Html.includes(`data-action="${control}"`)) {
+              throw new Error(`Volume 3 is missing the ${control} control.`);
+            }
+          }
+          for (const requiredLayout of ['info-rail', 'action-dock', 'trait-portrait']) {
+            if (!volume3Html.includes(requiredLayout)) {
+              throw new Error(`Volume 3 is missing the ${requiredLayout} layout region.`);
+            }
           }
           NODE
       - name: Configure GitHub Pages

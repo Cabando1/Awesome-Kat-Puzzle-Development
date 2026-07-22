@@ -44,14 +44,44 @@ function startHissFallback(media){
 
 const nativePlay=HTMLMediaElement.prototype.play;
 const nativePause=HTMLMediaElement.prototype.pause;
+const celebrationTimers=new WeakMap();
+
+function stopCelebration(media){
+  clearTimeout(celebrationTimers.get(media));
+  celebrationTimers.delete(media);
+  try{
+    nativePause.call(media);
+    media.currentTime=0;
+  }catch{}
+}
 
 HTMLMediaElement.prototype.play=function(...args){
   const media=this;
-  const isLoopedDataAudio=media.loop&&typeof media.src==='string'&&media.src.startsWith('data:audio/');
+  const source=media.currentSrc||media.src||'';
+  const isSoundWarmup=media.muted&&(
+    source.includes('/audio/meow-')
+    ||source.includes('/assets/audio/levels/sfx-')
+    ||source.includes('/assets/audio/stubborn-hiss.mp3')
+    ||source.includes('/assets/audio/laser-pointer.mp3')
+  );
+
+  // The game core used muted play calls to prewarm every effect. Mobile
+  // Safari can leak those clips into the audible mix, most noticeably the
+  // long level-complete cheer. A resolved no-op still satisfies the prewarm
+  // routine without actually starting any media.
+  if(isSoundWarmup){
+    try{nativePause.call(media);media.currentTime=0}catch{}
+    return Promise.resolve();
+  }
+
+  const isLoopedHiss=media.loop&&typeof media.src==='string'&&(
+    media.src.startsWith('data:audio/')||media.src.endsWith('/assets/audio/stubborn-hiss.mp3')
+  );
+  const isCelebration=source.includes('/assets/audio/levels/sfx-level-complete.mp3');
   let confirmed=false;
   let timer=null;
 
-  if(isLoopedDataAudio&&!media.muted){
+  if(isLoopedHiss&&!media.muted){
     const onPlaying=()=>{
       confirmed=true;
       clearTimeout(timer);
@@ -67,13 +97,18 @@ HTMLMediaElement.prototype.play=function(...args){
   try{
     result=nativePlay.apply(media,args);
   }catch(error){
-    if(isLoopedDataAudio&&!media.muted)startHissFallback(media);
+    if(isLoopedHiss&&!media.muted)startHissFallback(media);
     throw error;
+  }
+
+  if(isCelebration){
+    clearTimeout(celebrationTimers.get(media));
+    celebrationTimers.set(media,setTimeout(()=>stopCelebration(media),1800));
   }
 
   if(result&&typeof result.catch==='function'){
     result.catch(()=>{
-      if(isLoopedDataAudio&&!media.muted)startHissFallback(media);
+      if(isLoopedHiss&&!media.muted)startHissFallback(media);
     });
   }
   return result;
@@ -81,24 +116,131 @@ HTMLMediaElement.prototype.play=function(...args){
 
 HTMLMediaElement.prototype.pause=function(...args){
   stopHissFallback(this);
+  clearTimeout(celebrationTimers.get(this));
+  celebrationTimers.delete(this);
   return nativePause.apply(this,args);
 };
 
+function installBackgroundMusic(){
+  const roomMusic={
+    personality:'audio/quirky-loop.mp3',
+    scratchpost:'assets/audio/levels/music-level-2-yarn-room.mp3',
+    cafe:'assets/audio/levels/music-level-3-cardboard-castle.mp3',
+    zoomies:'assets/audio/levels/music-level-4-midnight-zoomies.mp3'
+  };
+
+  // iPhone Safari can keep a previous page alive in its back/forward cache.
+  // Retire every older game-music element before creating the one controller
+  // allowed to play in this document.
+  const oldPlayers=new Set([
+    window.__akpV3BackgroundMusic,
+    ...document.querySelectorAll('audio#backgroundMusic,audio[data-akp-music]')
+  ]);
+  oldPlayers.forEach(player=>{
+    if(!player)return;
+    try{player.pause();player.removeAttribute('src');player.load()}catch{}
+    if(player.parentNode)player.remove();
+  });
+
+  const music=new Audio();
+  music.id='backgroundMusic';
+  music.dataset.akpMusic='true';
+  music.dataset.room='personality';
+  music.setAttribute('aria-hidden','true');
+  music.setAttribute('playsinline','');
+  music.style.display='none';
+  music.preload='auto';
+  music.loop=true;
+  music.volume=.3;
+  music.src=roomMusic.personality;
+  document.body.appendChild(music);
+  window.__akpV3BackgroundMusic=music;
+
+  const ownerId=`${Date.now()}-${Math.random().toString(36).slice(2)}`;
+  const ownerKey='akpV3MusicOwner';
+  const musicChannel='BroadcastChannel'in window?new BroadcastChannel('akp-v3-music'):null;
+  let playPending=null;
+  let syncQueued=false;
+
+  const musicEnabled=()=>{
+    try{return !JSON.parse(localStorage.getItem('akpV3MusicMuted')||'false')}
+    catch{return true}
+  };
+  const modalIsOpen=()=>[...document.querySelectorAll('.modal')].some(modal=>!modal.classList.contains('hidden'));
+  const shouldPlay=()=>{
+    const pauseButton=document.querySelector('#pauseBtn');
+    const endOverlay=document.querySelector('#endOverlay');
+    return musicEnabled()
+      &&document.body.dataset.screen==='play'
+      &&pauseButton?.textContent.trim()!=='Resume'
+      &&!modalIsOpen()
+      &&(!endOverlay||endOverlay.classList.contains('hidden'));
+  };
+  const stop=()=>{
+    if(!music.paused)music.pause();
+    playPending=null;
+  };
+  const claimPhoneAudio=()=>{
+    const claim={id:ownerId,at:Date.now()};
+    musicChannel?.postMessage({type:'claim',...claim});
+    try{localStorage.setItem(ownerKey,JSON.stringify(claim))}catch{}
+  };
+  const play=()=>{
+    if(!music.paused||playPending)return;
+    claimPhoneAudio();
+    const result=music.play();
+    if(result&&typeof result.then==='function'){
+      playPending=result;
+      result.catch(()=>{}).finally(()=>{playPending=null});
+    }
+  };
+  const selectRoomTrack=()=>{
+    const room=document.body.dataset.room||'personality';
+    const source=roomMusic[room]||roomMusic.personality;
+    if(music.dataset.room===room)return;
+    stop();
+    music.src=source;
+    music.dataset.room=room;
+    music.load();
+  };
+  const sync=()=>{
+    selectRoomTrack();
+    shouldPlay()?play():stop();
+  };
+  const scheduleSync=()=>{
+    if(syncQueued)return;
+    syncQueued=true;
+    requestAnimationFrame(()=>{syncQueued=false;sync()});
+  };
+
+  [
+    '#briefingBtn','#startBtn','#lobbyMusic','#musicBtn','#pauseBtn',
+    '#menuBtn','#helpBtn','#closeHelp','#lessonBtn','#overlayBtn','#closeAdmin'
+  ].forEach(selector=>document.querySelector(selector)?.addEventListener('click',sync));
+
+  const observer=new MutationObserver(scheduleSync);
+  observer.observe(document.body,{attributes:true,subtree:true,attributeFilter:['class','data-screen','data-room']});
+  musicChannel?.addEventListener('message',event=>{
+    if(event.data?.type==='claim'&&event.data.id!==ownerId)stop();
+  });
+  window.addEventListener('storage',event=>{
+    if(event.key!==ownerKey||!event.newValue)return;
+    try{
+      const claim=JSON.parse(event.newValue);
+      if(claim.id!==ownerId&&Date.now()-claim.at<10000)stop();
+    }catch{}
+  });
+  document.addEventListener('visibilitychange',()=>document.hidden?stop():scheduleSync());
+  window.addEventListener('pagehide',stop);
+  window.addEventListener('pageshow',scheduleSync);
+  sync();
+}
+
 try{
-  const value=window.V3_CODE||'';
-  const binary=window.atob(value);
-  let source;
-  if(typeof TextDecoder==='function'){
-    const bytes=new Uint8Array(binary.length);
-    for(let i=0;i<binary.length;i++)bytes[i]=binary.charCodeAt(i);
-    source=new TextDecoder('utf-8').decode(bytes);
-  }else{
-    let encoded='';
-    for(let i=0;i<binary.length;i++)encoded+='%'+binary.charCodeAt(i).toString(16).padStart(2,'0');
-    source=decodeURIComponent(encoded);
+  if(!document.querySelector('#lobbyMusic')||!document.querySelector('#musicBtn')){
+    throw new Error('The Purrfect Puzzles game core did not initialize.');
   }
-  delete window.V3_CODE;
-  (0,eval)(source);
+  installBackgroundMusic();
 }catch(error){
   console.error('Volume 3 startup failed',error);
   const box=document.createElement('div');
