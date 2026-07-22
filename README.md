@@ -42,7 +42,9 @@ Personality-based edition with Calm, Stubborn, Chonky, and Zoomie cats, room-spe
 - `assets/audio/stubborn-hiss.mp3` — looping stubborn-cat hiss used after a refused rotation
 - `assets/audio/laser-pointer.mp3` — looping laser sound used while the red landing dot is active
 - `assets/audio/levels` — themed Level 2–4 music and progression effects
+- `assets/brand` — app icons, Apple touch icon, favicon, and 1200×630 link-preview artwork
 - `assets/cats/standard`, `assets/cats/stubborn`, `assets/cats/chonky` — full-cat artwork for all six named cats and three personality types
+- `site.webmanifest`, `robots.txt`, `sitemap.xml` — installable-app and search metadata
 - `joe-admin.html` — private administration page
 - `.github/workflows/pages.yml` — development GitHub Pages deployment
 

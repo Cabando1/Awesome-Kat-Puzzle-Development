@@ -1,5 +1,7 @@
 /* Audio controls added for the self-contained test build. */
 .lobby-top{flex-wrap:wrap}
+.paw.brand-logo{width:86px;height:86px;padding:0;overflow:hidden;border-radius:24px;background:#7351d8;box-shadow:0 12px 28px rgba(92,54,165,.28)}
+.paw.brand-logo img{display:block;width:100%;height:100%;object-fit:cover}
 @media(max-width:430px){.top-actions{gap:3px}.top-actions .top-btn{min-width:33px;padding:4px}.room-chip strong{font-size:.68rem}.play-nav .top-btn:first-child{display:none}}
 
 /* Volume 3.1 clarity, laser guide, and private skin-admin additions. */
