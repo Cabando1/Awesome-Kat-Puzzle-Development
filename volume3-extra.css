@@ -96,3 +96,46 @@ button:focus-visible,.top-btn:focus-visible,.small-btn:focus-visible{outline:3px
 @media (max-height:520px) and (min-width:761px) and (max-width:1000px){
   .play-screen{grid-template-rows:42px 58px minmax(0,1fr)}.runway{height:58px}.control-panel{grid-template-columns:1fr 1fr;grid-template-areas:"next trait" "stats stats" "goal goal" "laser drop" "controls controls"}.thumb-controls{grid-template-columns:repeat(4,minmax(0,1fr))}.thumb-controls button{min-height:34px}
 }
+
+/* Volume 3.3: calmer header, board-side information rail, and bottom play dock. */
+.compact-nav{min-width:44px;font-size:1.25rem;line-height:1}
+.info-rail,.action-dock{display:contents}
+.trait-icon{display:none}
+.walker{width:94px;height:58px;bottom:7px}
+.walker img{display:block;width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 4px 4px rgba(55,38,64,.2));pointer-events:none}
+.trait-portrait{width:96px;height:82px;flex:0 0 96px;display:grid;place-items:center}
+.personality-cat{display:block;width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 7px 7px rgba(66,42,68,.16));transition:opacity .16s ease}.personality-cat[data-ready="0"]{opacity:.35;filter:grayscale(.4) drop-shadow(0 7px 7px rgba(66,42,68,.12))}
+
+@media (max-width:760px){
+  .play-screen{grid-template-rows:48px 64px minmax(0,1fr);gap:6px}.play-topbar{height:48px;grid-template-columns:auto minmax(78px,1fr) auto;padding:4px 5px}.play-nav,.top-actions{gap:4px}.compact-nav{min-width:38px;width:38px;padding:4px}.help-btn{display:none}.top-actions .top-btn{min-width:38px;padding:5px 7px}.top-actions #pauseBtn{min-width:54px}.room-chip strong{font-size:.76rem}.room-chip span{font-size:.58rem}
+  .runway{height:64px}
+  .game-stage{display:grid;grid-template-columns:minmax(0,1fr) clamp(116px,32vw,138px);grid-template-rows:minmax(0,1fr) auto;grid-template-areas:"board info" "actions actions";gap:6px}
+  .board-panel{grid-area:board;min-width:0}.control-panel{display:contents}
+  .info-rail{grid-area:info;min-width:0;display:flex;flex-direction:column;gap:6px;padding:6px;border:1px solid rgba(255,255,255,.82);border-radius:18px;background:linear-gradient(180deg,rgba(255,251,247,.98),rgba(255,242,236,.96));box-shadow:0 10px 25px rgba(78,50,96,.11),var(--ui-inset);overflow:hidden}
+  .action-dock{grid-area:actions;display:grid;grid-template-columns:1fr;grid-template-areas:"laser" "drop" "controls";gap:6px;padding:7px;border:1px solid rgba(255,255,255,.82);border-radius:18px;background:linear-gradient(180deg,rgba(255,251,247,.98),rgba(255,242,236,.96));box-shadow:0 -7px 24px rgba(78,50,96,.11),var(--ui-inset)}
+  .next-card{min-height:0;flex:0 0 auto;display:flex;flex-direction:column;justify-content:flex-start;gap:2px;padding:6px 4px}.next-card canvas{width:100%;max-width:108px;max-height:68px}.next-copy{text-align:center;width:100%}.next-copy span{font-size:.5rem}.next-copy strong{font-size:.78rem}.next-copy small{font-size:.48rem;white-space:normal;line-height:1.15}
+  .trait-card{min-height:0;flex:1 1 auto;display:flex;flex-direction:column;justify-content:center;gap:2px;padding:7px 4px;text-align:center}.trait-portrait{width:100%;max-width:126px;height:clamp(100px,17svh,148px);flex:0 1 auto}.trait-copy{min-width:0;width:100%}.trait-card span{font-size:.48rem}.trait-card strong{font-size:.8rem}.trait-card p{display:block;margin:2px 0 0;font-size:.49rem;line-height:1.2}
+  .compact-stats{display:grid;grid-template-columns:1fr 1fr;gap:4px}.compact-stats div{padding:6px 2px}.compact-stats span{font-size:.45rem}.compact-stats strong{font-size:.76rem}.goal-track{height:6px;flex:0 0 6px}
+  .power-btn{grid-area:laser;min-height:40px}.drop-btn{grid-area:drop;min-height:44px}.thumb-controls{grid-area:controls;grid-template-columns:repeat(4,minmax(0,1fr))}.thumb-controls button{min-height:48px}.keyboard-help{display:none}
+}
+@media (max-width:430px){
+  .play-nav .top-btn:first-child{display:grid}.play-topbar{grid-template-columns:auto minmax(72px,1fr) auto}.compact-nav{min-width:34px;width:34px}.top-actions .top-btn{min-width:34px;padding:4px 5px}.top-actions #pauseBtn{min-width:48px}.room-chip strong{font-size:.68rem}.room-chip span{font-size:.52rem}
+  .game-stage{grid-template-columns:minmax(0,1fr) clamp(112px,31.5vw,128px)}.info-rail{padding:5px;gap:5px}.next-card{padding:4px 3px}.next-card canvas{max-height:58px}.trait-card{padding:5px 3px}.trait-portrait{max-width:112px}.compact-stats{gap:3px}.compact-stats div{padding:5px 1px}.action-dock{padding:6px;gap:5px}.power-btn{min-height:38px}.drop-btn{min-height:42px}.thumb-controls button{min-height:46px}
+}
+@media (max-width:760px) and (max-height:720px){
+  .play-screen{grid-template-rows:42px 52px minmax(0,1fr)}.play-topbar{height:42px}.runway{height:52px}.action-dock{padding:5px;gap:4px}.power-btn{min-height:34px}.drop-btn{min-height:37px}.thumb-controls button{min-height:40px}.info-rail{padding:4px;gap:4px}.next-card canvas{max-height:46px}.trait-portrait{height:82px}.trait-card p{display:none}.compact-stats div{padding:3px 1px}
+}
+
+/* Volume 3.4: larger Next Cat, smaller portrait card, and paired primary actions. */
+.play-screen:before{background-image:radial-gradient(circle at 8% 9%,rgba(255,241,213,.7),transparent 29%),radial-gradient(circle at 92% 12%,rgba(220,199,255,.58),transparent 31%),linear-gradient(155deg,rgba(255,250,244,.82),rgba(239,218,251,.78)),var(--skin-image);background-position:left top,right top,center,var(--skin-position);background-size:auto,auto,cover,var(--skin-size)}
+@media (max-width:760px){
+  .next-card{flex:0 0 clamp(178px,24svh,205px);justify-content:center}.next-card canvas{max-width:116px;max-height:96px}.next-copy strong{font-size:.84rem}.next-copy small{font-size:.52rem}
+  .trait-card{flex:1 1 auto;max-height:290px;justify-content:center}.trait-portrait{height:clamp(74px,12svh,104px);max-width:106px}.trait-card p{font-size:.5rem}
+  .action-dock{grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-template-areas:"laser drop" "controls controls"}.power-btn,.drop-btn{min-height:46px}.power-btn{padding:7px 10px}.power-btn span{white-space:nowrap}.drop-btn{font-size:.92rem}.thumb-controls{grid-column:1/-1}
+}
+@media (max-width:430px){
+  .next-card{flex-basis:190px}.next-card canvas{max-height:94px}.trait-card{max-height:284px}.trait-portrait{height:82px;max-width:96px}.power-btn,.drop-btn{min-height:42px}.power-btn{font-size:.65rem;padding:5px 7px}.drop-btn{font-size:.82rem}
+}
+@media (max-width:760px) and (max-height:720px){
+  .next-card{flex-basis:132px}.next-card canvas{max-height:68px}.trait-card{max-height:220px}.trait-portrait{height:62px}.power-btn,.drop-btn{min-height:38px}
+}

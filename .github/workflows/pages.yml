@@ -35,6 +35,11 @@ jobs:
           test -f volume3.js
           test -f assets/audio/stubborn-hiss.mp3
           test -f assets/audio/laser-pointer.mp3
+          for personality in standard stubborn chonky; do
+            for cat in marmalade poppy pepper biscuit pickle socks; do
+              test -f "assets/cats/$personality/$cat.png"
+            done
+          done
           test -f joe-admin.html
           node --check advanced.js
           node --check volume3.js
@@ -80,11 +85,27 @@ jobs:
           if (!volume3Source.includes('Ve("stubborn"')) {
             throw new Error('The first-time Stubborn lesson is missing.');
           }
+          for (const levelFeature of [
+            'currentRoomLevel().goal',
+            'currentRoomLevel().speed',
+            'roomLevelIndex++',
+            'D=2',
+            'assets/cats/',
+          ]) {
+            if (!volume3Source.includes(levelFeature)) {
+              throw new Error(`Volume 3 is missing level or cat-art behavior: ${levelFeature}`);
+            }
+          }
 
           const requiredControls = ['rotate', 'down', 'left', 'right', 'drop'];
           for (const control of requiredControls) {
             if (!volume3Html.includes(`data-action="${control}"`)) {
               throw new Error(`Volume 3 is missing the ${control} control.`);
+            }
+          }
+          for (const requiredLayout of ['info-rail', 'action-dock', 'trait-portrait']) {
+            if (!volume3Html.includes(requiredLayout)) {
+              throw new Error(`Volume 3 is missing the ${requiredLayout} layout region.`);
             }
           }
           NODE

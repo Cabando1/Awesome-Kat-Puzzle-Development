@@ -29,9 +29,9 @@ The original desktop game, preserved separately.
 
 Responsive edition for computer, tablet, iPhone, and Android.
 
-### Volume 3: Cats With Attitude
+### Volume 3: Purrfect Puzzles
 
-Personality-based edition with Calm, Stubborn, and Chonky cats, a couch obstacle, laser-pointer movement, cat sounds, music, mechanic lessons, and level background skins.
+Personality-based edition with Calm, Stubborn, and Chonky cats, a couch obstacle, laser-pointer movement, cat sounds, music, mechanic lessons, four progressively faster levels, and per-level background skins.
 
 ## Important files
 
@@ -41,6 +41,7 @@ Personality-based edition with Calm, Stubborn, and Chonky cats, a couch obstacle
 - `volume3.html`, `volume3.css`, `volume3-extra.css`, `volume3.js` — Volume 3
 - `assets/audio/stubborn-hiss.mp3` — looping stubborn-cat hiss used after a refused rotation
 - `assets/audio/laser-pointer.mp3` — looping laser sound used while the red landing dot is active
+- `assets/cats/standard`, `assets/cats/stubborn`, `assets/cats/chonky` — full-cat artwork for all six named cats and three personality types
 - `joe-admin.html` — private administration page
 - `.github/workflows/pages.yml` — development GitHub Pages deployment
 
@@ -50,10 +51,17 @@ drop, pause, room exit, or round end. Audio playback failures do not stop gamepl
 The first Stubborn cat also plays a one-time arrival hiss and opens its mechanic
 lesson after the cat drops through the runway hatch.
 
-On phones, the runway stays above the board and the gameplay summary, laser, Drop
-Cat button, and four movement controls form a bottom control dock. Wider screens
+On phones, the runway stays above the board; the next cat, illustrated personality
+portrait, goal, score, best, and streak stay in a rail beside the board. The laser,
+Drop Cat button, and four movement controls form a bottom control dock. Wider screens
 keep the board and control panel side by side. Both layouts stay within the visible
 safe area and use the same gameplay code.
+
+Volume 3 advances through four rooms: Personality Playroom, Scratchpost
+Shuffle, Cat Café Chaos, and Midnight Zoomies. Each level has a higher line
+goal, faster automatic falling, and a larger mix of Stubborn and Chonky cats.
+Laser uses reset to two at the beginning of every level. Finishing a room opens
+the next one; losing restarts the current level.
 
 ## Production game
 

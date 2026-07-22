@@ -7,8 +7,8 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>Cats With Attitude · Volume 3</title>
-<link rel="stylesheet" href="volume3.css?v=9"><link rel="stylesheet" href="volume3-extra.css?v=9">
+<title>Purrfect Puzzles</title>
+<link rel="stylesheet" href="volume3.css?v=15"><link rel="stylesheet" href="volume3-extra.css?v=15">
 </head>
 <body data-screen="lobby">
 <div id="app">
@@ -19,17 +19,17 @@
         <button class="small-btn" id="lobbySound" type="button">🔊 Effects</button>
       </div>
       <div class="paw" id="pawLogo" aria-label="Paw logo">🐾</div>
-      <p class="eyebrow">Volume 3 · Cats With Attitude</p>
-      <h1>Cats With Attitude</h1>
+      <p class="eyebrow">The falling-cat puzzle game</p>
+      <h1>Purrfect Puzzles</h1>
       <p class="lead">A new personality-driven edition where every cat has a personality, a clearly marked three-wide couch is already in the way, and a laser pointer can rescue a difficult landing.</p>
 
       <section class="room-preview" aria-labelledby="roomTitle">
         <div>
           <p class="eyebrow">Featured room</p>
           <h2 id="roomTitle">Personality Playroom</h2>
-          <p>Clear 8 lines while learning Calm, Stubborn, and Chonky cats.</p>
+          <p>Master four rooms that become faster and fill with more challenging cat personalities.</p>
         </div>
-        <div class="room-meta"><span>8-line goal</span><span>2 laser uses</span><span>3×2 couch obstacle</span></div>
+        <div class="room-meta"><span>4 levels</span><span>Lasers refill each level</span><span>3×2 couch obstacle</span></div>
       </section>
 
       <div class="feature-grid">
@@ -44,13 +44,13 @@
     </div>
   </section>
 
-  <section id="playScreen" class="play-screen hidden" aria-label="Cats With Attitude game">
+  <section id="playScreen" class="play-screen hidden" aria-label="Purrfect Puzzles game">
     <header class="play-topbar">
       <div class="play-nav">
-        <a class="top-btn" href="index.html" aria-label="Return to version dashboard">← Versions</a>
-        <button id="menuBtn" class="top-btn" type="button">Room</button>
+        <a class="top-btn compact-nav" href="index.html" aria-label="Return to version dashboard">←</a>
+        <button id="menuBtn" class="top-btn compact-nav" type="button" aria-label="Room menu">☰</button>
       </div>
-      <div class="room-chip"><strong>Personality Playroom</strong><span id="roomProgress">0 / 8 lines</span></div>
+      <div class="room-chip"><strong id="roomName">Personality Playroom</strong><span id="roomProgress">0 / 8 lines</span></div>
       <div class="top-actions">
         <button id="helpBtn" class="top-btn help-btn" type="button" aria-label="Open mechanic guide">?</button>
         <button id="pauseBtn" class="top-btn" type="button">Pause</button>
@@ -61,7 +61,7 @@
     <div class="runway" id="runway">
       <span class="cloud c1">☁</span><span class="cloud c2">☁</span><span class="cloud c3">☁</span>
       <span class="runway-title">Personality check-in</span>
-      <div class="walker" id="walker"><div class="walker-body" id="walkerBody"><div class="walker-head"><span>••</span></div><i class="walker-tail"></i><i class="walker-leg l1"></i><i class="walker-leg l2"></i></div></div><div class="hatch"></div>
+      <div class="walker" id="walker"><img id="walkerImage" src="assets/cats/standard/marmalade.png" alt="Marmalade walking toward the room"></div><div class="hatch"></div>
     </div>
 
     <main class="game-stage">
@@ -73,34 +73,41 @@
       </section>
 
       <aside class="control-panel">
-        <section class="next-card">
-          <canvas id="nextCanvas" width="132" height="82" aria-label="Next cat preview"></canvas>
-          <div class="next-copy"><span>Next cat</span><strong id="nextName">Marmalade</strong><small id="nextShape">Calm · T-shape</small></div>
-        </section>
+        <div class="info-rail">
+          <section class="next-card">
+            <canvas id="nextCanvas" width="132" height="82" aria-label="Next cat preview"></canvas>
+            <div class="next-copy"><span>Next cat</span><strong id="nextName">Marmalade</strong><small id="nextShape">Calm · T-shape</small></div>
+          </section>
 
-        <section class="trait-card" id="traitCard" data-trait="calm">
-          <div class="trait-icon" id="traitIcon">😺</div>
-          <div><span>Current personality</span><strong id="traitName">Calm</strong><p id="traitDescription">Behaves normally.</p></div>
-        </section>
+          <section class="trait-card" id="traitCard" data-trait="calm">
+            <div class="trait-portrait" aria-label="Current personality cat portrait">
+              <img class="personality-cat" id="traitPortraitImage" src="assets/cats/standard/marmalade.png" alt="Marmalade, a Calm cat" data-ready="0">
+            </div>
+            <div class="trait-copy"><span>Current personality</span><strong id="traitName">Calm</strong><p id="traitDescription">Behaves normally.</p></div>
+            <div class="trait-icon" id="traitIcon" aria-hidden="true">😺</div>
+          </section>
 
-        <div class="compact-stats">
-          <div><span>Goal</span><strong id="goalStat">0/8</strong></div>
-          <div><span>Score</span><strong id="scoreStat">0</strong></div>
-          <div><span>Best</span><strong id="bestStat">0</strong></div>
-          <div><span>Streak</span><strong id="streakStat">0</strong></div>
+          <div class="compact-stats">
+            <div><span>Goal</span><strong id="goalStat">0/8</strong></div>
+            <div><span>Score</span><strong id="scoreStat">0</strong></div>
+            <div><span>Best</span><strong id="bestStat">0</strong></div>
+            <div><span>Streak</span><strong id="streakStat">0</strong></div>
+          </div>
+          <div class="goal-track"><span id="goalBar"></span></div>
         </div>
-        <div class="goal-track"><span id="goalBar"></span></div>
 
-        <button id="laserBtn" class="power-btn" type="button"><span>🔴 Laser pointer</span><strong id="laserCount">2 uses</strong></button>
-        <button class="drop-btn" data-action="drop" type="button">Drop cat</button>
-        <div class="thumb-controls" aria-label="Touch controls">
-          <button data-action="rotate" type="button" aria-label="Rotate">↻<span>Rotate</span></button>
-          <button data-action="down" type="button" aria-label="Move down">↓<span>Down</span></button>
-          <i aria-hidden="true"></i>
-          <button data-action="left" type="button" aria-label="Move left">←<span>Left</span></button>
-          <button data-action="right" type="button" aria-label="Move right">→<span>Right</span></button>
+        <div class="action-dock">
+          <button id="laserBtn" class="power-btn" type="button"><span>🔴 Laser pointer</span><strong id="laserCount">2 uses</strong></button>
+          <button class="drop-btn" data-action="drop" type="button">Drop cat</button>
+          <div class="thumb-controls" aria-label="Touch controls">
+            <button data-action="rotate" type="button" aria-label="Rotate">↻<span>Rotate</span></button>
+            <button data-action="down" type="button" aria-label="Move down">↓<span>Down</span></button>
+            <i aria-hidden="true"></i>
+            <button data-action="left" type="button" aria-label="Move left">←<span>Left</span></button>
+            <button data-action="right" type="button" aria-label="Move right">→<span>Right</span></button>
+          </div>
+          <p class="keyboard-help">Keyboard: arrows move · ↑ or Space rotates · Enter drops · L uses laser · P pauses</p>
         </div>
-        <p class="keyboard-help">Keyboard: arrows move · ↑ or Space rotates · Enter drops · L uses laser · P pauses</p>
       </aside>
     </main>
   </section>
@@ -115,6 +122,7 @@
         <article><span>🐈</span><div><strong>Chonky cats</strong><p>Occupy five spaces instead of four. Watch the landing guide.</p></div></article>
         <article><span>🛋️</span><div><strong>Couch</strong><p>The couch is a permanent obstacle. Build around it.</p></div></article>
         <article><span>🔴</span><div><strong>Laser pointer</strong><p>A red dot marks the safest landing and the active cat follows it into place. You have two uses.</p></div></article>
+        <article><span>🏁</span><div><strong>Four levels</strong><p>Each room falls faster and brings more Stubborn and Chonky cats. Your two laser uses refill at the start of every level.</p></div></article>
       </div>
       <label class="remember-row"><input id="skipBriefing" type="checkbox"> Skip this briefing next time</label>
       <div class="modal-actions"><button id="cancelBriefing" class="secondary-btn" type="button">Not yet</button><button id="startBtn" class="primary-btn" type="button">I understand — Start room</button></div>
@@ -124,13 +132,14 @@
   <div class="modal hidden" id="helpModal" role="dialog" aria-modal="true" aria-labelledby="helpTitle">
     <div class="modal-card compact-modal">
       <p class="eyebrow">Mechanic guide</p>
-      <h2 id="helpTitle">Cats With Attitude</h2>
+      <h2 id="helpTitle">Purrfect Puzzles</h2>
       <div class="guide-list mini">
         <article><span>😺</span><div><strong>Calm</strong><p>Normal controls.</p></div></article>
         <article><span>🙀</span><div><strong>Stubborn</strong><p>May refuse rotation.</p></div></article>
         <article><span>🐈</span><div><strong>Chonky</strong><p>Five occupied spaces.</p></div></article>
         <article><span>🛋️</span><div><strong>Couch</strong><p>Permanent blocked spaces.</p></div></article>
         <article><span>🔴</span><div><strong>Laser</strong><p>Red dot marks landing; cat follows.</p></div></article>
+        <article><span>🏁</span><div><strong>Levels</strong><p>Rooms get faster. Lasers refill each level.</p></div></article>
       </div>
       <button id="closeHelp" class="primary-btn" type="button">Return to game</button>
     </div>
@@ -144,10 +153,10 @@
     <div class="modal-card compact-modal">
       <span class="private-admin-badge">Private test admin</span>
       <h2 id="adminTitle">Level background skins</h2>
-      <p class="skin-admin-note">Upload a wallpaper for the area around the game. The board remains readable and the image is stored on this device. Future levels can use the same level-keyed system.</p>
+      <p class="skin-admin-note">Upload a separate wallpaper for each room. The board remains readable and every image stays on this device.</p>
       <div class="skin-admin-grid">
         <label>Level
-          <select id="skinLevel"><option value="personality">Personality Playroom</option></select>
+          <select id="skinLevel"><option value="personality">Level 1 · Personality Playroom</option><option value="scratchpost">Level 2 · Scratchpost Shuffle</option><option value="cafe">Level 3 · Cat Café Chaos</option><option value="zoomies">Level 4 · Midnight Zoomies</option></select>
         </label>
         <label>Image fit
           <select id="skinFit"><option value="cover">Fill screen</option><option value="contain">Show whole image</option></select>
@@ -167,6 +176,6 @@
 
   <div class="toast" id="toast" aria-live="polite"></div>
 </div>
-<script src="volume3-code-1.js?v=9"></script><script src="volume3-code-2.js?v=9"></script><script src="volume3-code-3.js?v=9"></script><script src="volume3-code-4.js?v=9"></script><script src="volume3.js?v=9"></script>
+<script src="volume3-code-1.js?v=15"></script><script src="volume3-code-2.js?v=15"></script><script src="volume3-code-3.js?v=15"></script><script src="volume3-code-4.js?v=15"></script><script src="volume3.js?v=15"></script>
 </body>
 </html>
