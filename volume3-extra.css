@@ -102,7 +102,7 @@ button:focus-visible,.top-btn:focus-visible,.small-btn:focus-visible{outline:3px
 .info-rail,.action-dock{display:contents}
 .trait-icon{display:none}
 .walker{width:94px;height:58px;bottom:7px}
-.walker img{display:block;width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 4px 4px rgba(55,38,64,.2));pointer-events:none}
+.walker img{display:block;width:100%;height:100%;object-fit:contain;transform:scaleX(-1);transform-origin:center;filter:drop-shadow(0 4px 4px rgba(55,38,64,.2));pointer-events:none}
 .trait-portrait{width:96px;height:82px;flex:0 0 96px;display:grid;place-items:center}
 .personality-cat{display:block;width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 7px 7px rgba(66,42,68,.16));transition:opacity .16s ease}.personality-cat[data-ready="0"]{opacity:.35;filter:grayscale(.4) drop-shadow(0 7px 7px rgba(66,42,68,.12))}
 

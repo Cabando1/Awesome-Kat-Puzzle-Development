@@ -86,6 +86,52 @@ HTMLMediaElement.prototype.pause=function(...args){
   return nativePause.apply(this,args);
 };
 
+function installBackgroundMusic(){
+  const music=new Audio('audio/quirky-loop.mp3');
+  music.id='backgroundMusic';
+  music.setAttribute('aria-hidden','true');
+  music.style.display='none';
+  music.preload='auto';
+  music.loop=true;
+  music.volume=.3;
+  document.body.appendChild(music);
+  window.__akpV3BackgroundMusic=music;
+
+  const musicEnabled=()=>{
+    try{return !JSON.parse(localStorage.getItem('akpV3MusicMuted')||'false')}
+    catch{return true}
+  };
+  const modalIsOpen=()=>[...document.querySelectorAll('.modal')].some(modal=>!modal.classList.contains('hidden'));
+  const shouldPlay=()=>{
+    const pauseButton=document.querySelector('#pauseBtn');
+    const endOverlay=document.querySelector('#endOverlay');
+    return musicEnabled()
+      &&document.body.dataset.screen==='play'
+      &&pauseButton?.textContent.trim()!=='Resume'
+      &&!modalIsOpen()
+      &&(!endOverlay||endOverlay.classList.contains('hidden'));
+  };
+  const sync=()=>{
+    if(shouldPlay()){
+      const result=music.play();
+      if(result&&typeof result.catch==='function')result.catch(()=>{});
+    }else{
+      music.pause();
+    }
+  };
+
+  [
+    '#briefingBtn','#startBtn','#lobbyMusic','#musicBtn','#pauseBtn',
+    '#menuBtn','#helpBtn','#closeHelp','#lessonBtn','#overlayBtn','#closeAdmin'
+  ].forEach(selector=>document.querySelector(selector)?.addEventListener('click',sync));
+
+  const observer=new MutationObserver(sync);
+  observer.observe(document.body,{attributes:true,subtree:true,attributeFilter:['class','data-screen']});
+  document.addEventListener('visibilitychange',()=>document.hidden?music.pause():sync());
+  window.addEventListener('pagehide',()=>music.pause());
+  sync();
+}
+
 try{
   const value=window.V3_CODE||'';
   const binary=window.atob(value);
@@ -101,6 +147,7 @@ try{
   }
   delete window.V3_CODE;
   (0,eval)(source);
+  installBackgroundMusic();
 }catch(error){
   console.error('Volume 3 startup failed',error);
   const box=document.createElement('div');
