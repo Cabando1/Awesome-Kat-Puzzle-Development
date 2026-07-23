@@ -1,0 +1,111 @@
+name: Deploy to Hostinger (purrfectpuzzles.com)
+
+# Publishes the live site at https://www.purrfectpuzzles.com over SSH.
+# This is separate from pages.yml, which publishes the GitHub Pages copy.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: hostinger-deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+
+      - name: Validate the build before it reaches the live site
+        run: |
+          set -euo pipefail
+          for required in index.production.html volume3.html volume3.js volume3-core.js \
+                          volume3.css volume3-extra.css classic.html game.html \
+                          advanced.html advanced.css advanced.js \
+                          assets/audio/stubborn-hiss.mp3 assets/audio/laser-pointer.mp3; do
+            test -f "$required" || { echo "Missing required file: $required"; exit 1; }
+          done
+
+          node --check advanced.js
+          node --check volume3.js
+
+          # The live menu must never ship the development banner.
+          if grep -q 'Development Copy' index.production.html; then
+            echo "index.production.html still contains the development banner."
+            exit 1
+          fi
+
+          # The Versions button must reach a real menu, not a copy of the game.
+          # This is the exact failure that broke the live site in July 2026.
+          if ! grep -q 'href="volume3.html' index.production.html; then
+            echo "index.production.html does not link to the game."
+            exit 1
+          fi
+          if grep -q 'data-action="drop"' index.production.html; then
+            echo "index.production.html looks like a copy of the game page, not the menu."
+            exit 1
+          fi
+
+      - name: Stage the files that belong on the live server
+        run: |
+          set -euo pipefail
+          mkdir -p _publish
+          rsync -a ./ _publish/ \
+            --exclude '.git' \
+            --exclude '.github' \
+            --exclude '_publish' \
+            --exclude '.nojekyll' \
+            --exclude 'README.md' \
+            --exclude 'joe-admin.html' \
+            --exclude 'volume3-hiss-*.js' \
+            --exclude 'volume3-laser-*.js' \
+            --exclude 'volume3-hiss.js' \
+            --exclude 'volume3-laser.js'
+
+          # The repository's index.html is the development menu (banner + "Test"
+          # buttons). The live site gets the production menu instead.
+          mv _publish/index.production.html _publish/index.html
+
+          echo "Staged files:"
+          ls _publish
+
+      - name: Configure SSH
+        run: |
+          set -euo pipefail
+          mkdir -p ~/.ssh
+          printf '%s\n' "${{ secrets.HOSTINGER_SSH_KEY }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          printf '%s\n' "${{ secrets.HOSTINGER_KNOWN_HOSTS }}" > ~/.ssh/known_hosts
+          chmod 644 ~/.ssh/known_hosts
+
+      - name: Upload to Hostinger
+        run: |
+          set -euo pipefail
+          rsync -rlpt --omit-dir-times \
+            -e "ssh -i ~/.ssh/deploy_key -p ${{ secrets.HOSTINGER_PORT }} -o IdentitiesOnly=yes" \
+            _publish/ \
+            "${{ secrets.HOSTINGER_USER }}@${{ secrets.HOSTINGER_HOST }}:${{ secrets.HOSTINGER_PATH }}/"
+
+      - name: Verify the live site
+        run: |
+          set -euo pipefail
+          fail=0
+          for path in "" volume3.html classic.html advanced.html game.html; do
+            code=$(curl -s -o /dev/null -w '%{http_code}' "https://www.purrfectpuzzles.com/$path")
+            echo "$code  /$path"
+            [ "$code" = "200" ] || fail=1
+          done
+
+          # The menu must be a menu, not another copy of the game.
+          if curl -s https://www.purrfectpuzzles.com/ | grep -q 'data-action="drop"'; then
+            echo "Live index.html is serving the game instead of the menu."
+            fail=1
+          fi
+          exit $fail
+
+      - name: Remove the deploy key
+        if: always()
+        run: rm -f ~/.ssh/deploy_key
